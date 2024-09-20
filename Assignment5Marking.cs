@@ -298,6 +298,69 @@ namespace CareerCloudCore.UnitTests.Assignment5
 
         #endregion PocoInitialization
 
+
+        #region Check ProducesResponse Attribute
+        [TestMethod]
+        public void ControllersMethods_ProducesResponse_Poco_Attr()
+        {
+            TController_ProducesResponse_OfTypePoco<SystemCountryCodeController, SystemCountryCodePoco>(nameof(SystemCountryCodeController.GetSystemCountryCode));
+
+            TController_ProducesResponse_OfTypePoco<CompanyProfileController, CompanyProfilePoco>(nameof(CompanyProfileController.GetCompanyProfile));
+
+            TController_ProducesResponse_OfTypePoco<SystemLanguageCodeController, SystemLanguageCodePoco>(nameof(SystemLanguageCodeController.GetSystemLanguageCode));
+
+            TController_ProducesResponse_OfTypePoco<CompanyDescriptionController, CompanyDescriptionPoco>(nameof(CompanyDescriptionController.GetCompanyDescription));
+
+            TController_ProducesResponse_OfTypePoco<CompanyJobController, CompanyJobPoco>(nameof(CompanyJobController.GetCompanyJob));
+
+            TController_ProducesResponse_OfTypePoco<CompanyJobEducationController, CompanyJobEducationPoco>(nameof(CompanyJobEducationController.GetCompanyJobEducation));
+
+            TController_ProducesResponse_OfTypePoco<CompanyJobSkillController, CompanyJobSkillPoco>(nameof(CompanyJobSkillController.GetCompanyJobSkill));
+
+            TController_ProducesResponse_OfTypePoco<CompanyJobsDescriptionController, CompanyJobDescriptionPoco>(nameof(CompanyJobsDescriptionController.GetCompanyJobsDescription));
+
+            TController_ProducesResponse_OfTypePoco<CompanyLocationController, CompanyLocationPoco>(nameof(CompanyLocationController.GetCompanyLocation));
+
+            TController_ProducesResponse_OfTypePoco<SecurityLoginController, SecurityLoginPoco>(nameof(SecurityLoginController.GetSecurityLogin));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantProfileController, ApplicantProfilePoco>(nameof(ApplicantProfileController.GetApplicantProfile));
+
+            TController_ProducesResponse_OfTypePoco<SecurityLoginsLogController, SecurityLoginsLogPoco>(nameof(SecurityLoginsLogController.GetSecurityLoginLog));
+
+            TController_ProducesResponse_OfTypePoco<SecurityRoleController, SecurityRolePoco>(nameof(SecurityRoleController.GetSecurityRole));
+
+            TController_ProducesResponse_OfTypePoco<SecurityLoginsRoleController, SecurityLoginsRolePoco>(nameof(SecurityLoginsRoleController.GetSecurityLoginsRole));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantEducationController, ApplicantEducationPoco>(nameof(ApplicantEducationController.GetApplicantEducation));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantResumeController, ApplicantResumePoco>(nameof(ApplicantResumeController.GetApplicantResume));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantSkillController, ApplicantSkillPoco>(nameof(ApplicantSkillController.GetApplicantSkill));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantWorkHistoryController, ApplicantWorkHistoryPoco>(nameof(ApplicantWorkHistoryController.GetApplicantWorkHistory));
+
+            TController_ProducesResponse_OfTypePoco<ApplicantJobApplicationController, ApplicantJobApplicationPoco>(nameof(ApplicantJobApplicationController.GetApplicantJobApplication));
+        }
+
+
+        public void TController_ProducesResponse_OfTypePoco<TController, TPoco>(string methodName)
+            where TController : ControllerBase
+        {
+            bool isProduceResponseOfTypePoco = false;
+
+            var producesResponseAttrs = typeof(TController)
+                              .GetMethod(methodName)
+                              .GetCustomAttributes(typeof(ProducesResponseTypeAttribute), false);
+
+            if (producesResponseAttrs.Length > 0)
+                isProduceResponseOfTypePoco = producesResponseAttrs.Cast<ProducesResponseTypeAttribute>()
+                    .Any(response => response.Type == typeof(TPoco)
+                        && response.StatusCode == (int)HttpStatusCode.OK);
+
+            Assert.IsTrue(isProduceResponseOfTypePoco, $"ProducesResponseType attribute is not defined on the method {typeof(TController).Name}.{methodName}()");
+        }
+        #endregion
+
         [TestMethod]
         public void Assignment6_DeepDive_CRUD_Test()
         {
