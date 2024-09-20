@@ -361,6 +361,59 @@ namespace CareerCloudCore.UnitTests.Assignment5
         }
         #endregion
 
+
+        #region Check Controllers Route Attribute
+        [TestMethod]
+        public void Controllers_Check_Route_Attr()
+        {
+            TController_Check_Route_Attr<SystemCountryCodeController>();
+            TController_Check_Route_Attr<SystemLanguageCodeController>();
+            TController_Check_Route_Attr<CompanyProfileController>();
+            TController_Check_Route_Attr<CompanyDescriptionController>();
+            TController_Check_Route_Attr<CompanyJobController>();
+            TController_Check_Route_Attr<CompanyJobsDescriptionController>();
+            TController_Check_Route_Attr<CompanyLocationController>();
+            TController_Check_Route_Attr<CompanyJobEducationController>();
+            TController_Check_Route_Attr<CompanyJobSkillController>();
+            TController_Check_Route_Attr<SecurityLoginController>();
+            TController_Check_Route_Attr<SecurityLoginsLogController>();
+            TController_Check_Route_Attr<SecurityRoleController>();
+            TController_Check_Route_Attr<SecurityLoginsRoleController>();
+            TController_Check_Route_Attr<ApplicantProfileController>();
+            TController_Check_Route_Attr<ApplicantEducationController>();
+            TController_Check_Route_Attr<ApplicantJobApplicationController>();
+            TController_Check_Route_Attr<ApplicantResumeController>();
+            TController_Check_Route_Attr<ApplicantSkillController>();
+            TController_Check_Route_Attr<ApplicantWorkHistoryController>();
+        }
+
+        public void TController_Check_Route_Attr<TController>() where TController : ControllerBase
+        {
+            bool isRouteValid = false;
+
+            var routeAttr = (RouteAttribute)typeof(TController)
+                              .GetCustomAttributes(typeof(RouteAttribute), false)
+                              .FirstOrDefault();
+
+            bool isVersionValid = typeof(TController).GetCustomAttributes(typeof(ApiVersionAttribute), false)
+                              ?.Cast<ApiVersionAttribute>()
+                              ?.Any(verAtt => verAtt.Versions.Any(ver => ver.MajorVersion == 1 && ver.MinorVersion == 0)) ?? false;
+
+            if (routeAttr != null)
+                isRouteValid = IsControllerRouteValid(routeAttr.Template) && isVersionValid;
+
+            Assert.IsTrue(isRouteValid, $"Route attribute is not valid for {typeof(TController).Name}");
+        }
+
+        public bool IsControllerRouteValid(string route)
+        {
+            var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+
+            return route.StartsWith("api/careercloud", caseInsensitive)
+                    && (route.EndsWith("v{version:apiVersion}/", caseInsensitive) || route.EndsWith("v{version:apiVersion}", caseInsensitive));
+        }
+        #endregion
+
         [TestMethod]
         public void Assignment6_DeepDive_CRUD_Test()
         {
